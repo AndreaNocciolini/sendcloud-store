@@ -1,5 +1,5 @@
 import Fastify from 'fastify';
-import routes from './src/routes/routes';
+import routes from './src/routes/orders/routes';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
