@@ -69,6 +69,14 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             reply.send(result);
         }
     );
+
+    fastify.get(
+        '/statuses', // get Parcel Statuses. Probably useless :P
+        async (request: any, reply: any) => {
+            const result = await orderHelper.getOrderStatuses();
+            return reply.send(result);
+        }
+    );
 }
 
 export = routes;
