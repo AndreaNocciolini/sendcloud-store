@@ -37,6 +37,28 @@ const getOrders = async (id?: number) => {
     return JSON.parse(result);
 }
 
+const getOrderDocuments = async (orderId: number, documentType: DocumentType) => {
+    let sendcloudRequest;
+    try {
+            sendcloudRequest = await request(`https://panel.sendcloud.sc/api/v2/parcels/${orderId}/documents/${documentType}`,
+                {
+                    headers: {
+                        "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
+                        "Content-Type": "application/json",
+                        "User-Agent": "undici/4.12.1"
+
+                    },
+                    method: "GET"
+                }
+            )
+    } catch (e) {
+        console.log(JSON.stringify(e));
+        return;
+    }
+    const result = await sendcloudRequest.body.text();
+    return JSON.parse(result);
+}
+
 const createOrder = async (order: OrderType.SingleOrder) => {
     let sendcloudRequest;
     try {
@@ -140,6 +162,7 @@ const getOrderStatuses = async () => {
 export const orderHelper = {
     getOrders,
     createOrder,
+    getOrderDocuments,
     updateOrder,
     deleteOrder,
     getOrderStatuses

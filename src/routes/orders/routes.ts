@@ -31,6 +31,31 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         }
     );
 
+    fastify.get<{ Params: { id: number, documentType: DocumentType } }>(
+        'documents/:id/:documentType',
+        {
+            schema: {
+                params: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'integer' },
+                        documentType: { 
+                            type: 'string',
+                            enum: ["air-waybill", "cn23", "cn23-default", "commercial-invoice", "cp71", "label", "qr"] // double check for documentType
+                        }
+                    },
+                    required: ['id', 'documentType']
+                }
+            }
+        },
+        async (request: any, reply: any) => {
+            const orderId = Number(request.params.id);
+            const documentType = request.params.documentType;
+            const result = await orderHelper.getOrderDocuments(orderId, documentType);
+            return reply.send(result);
+        }
+    );
+
     fastify.post<{ Body: OrderType.SingleOrder }>(
         '/create',
         async (request: any, reply: any) => {
@@ -48,7 +73,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         async (request: any, reply: any) => {
             const order = request?.body;
             const orderId = Number(request.params?.id);
-            if(!order){
+            if (!order) {
                 throw new Error(`Please, provide data to update for order with parcelId: ${orderId}`);
             };
             if (!orderId || Number.isNaN(orderId)) {
@@ -71,7 +96,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     );
 
     fastify.get(
-        '/statuses', // get Parcel Statuses. Probably useless :P
+        '/statuses', // get Parcel Statuses. Probably useless :P --> https://api.sendcloud.dev/docs/sendcloud-public-api/parcel-statuses/operations/list-parcel-statuses
         async (request: any, reply: any) => {
             const result = await orderHelper.getOrderStatuses();
             return reply.send(result);
