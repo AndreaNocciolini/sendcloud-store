@@ -5,7 +5,7 @@ const getOrders = async (id?: number) => {
     let sendcloudRequest;
     try {
         if (id) {
-            sendcloudRequest = await request(`https://panel.sendcloud.sc/api/v2/parcels/${id}`,
+            sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/parcels/${id}`,
                 {
                     headers: {
                         "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
@@ -17,7 +17,7 @@ const getOrders = async (id?: number) => {
                 }
             )
         } else {
-            sendcloudRequest = await request(`https://panel.sendcloud.sc/api/v2/parcels`,
+            sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/parcels`,
                 {
                     headers: {
                         "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
@@ -40,7 +40,7 @@ const getOrders = async (id?: number) => {
 const getOrderDocuments = async (orderId: number, documentType: DocumentType) => {
     let sendcloudRequest;
     try {
-            sendcloudRequest = await request(`https://panel.sendcloud.sc/api/v2/parcels/${orderId}/documents/${documentType}`,
+            sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/parcels/${orderId}/documents/${documentType}`,
                 {
                     headers: {
                         "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
@@ -62,7 +62,7 @@ const getOrderDocuments = async (orderId: number, documentType: DocumentType) =>
 const createOrder = async (order: OrderType.SingleOrder) => {
     let sendcloudRequest;
     try {
-        sendcloudRequest = await request(`https://panel.sendcloud.sc/api/v2/parcels`,
+        sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/parcels`,
             {
                 headers: {
                     "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
@@ -95,7 +95,7 @@ const updateOrder = async (order: OrderType.SingleOrder, orderId?: number) => {
         };
     }
     try {
-        sendcloudRequest = await request(`https://panel.sendcloud.sc/api/v2/parcels`,
+        sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/parcels`,
             {
                 headers: {
                     "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
@@ -118,7 +118,7 @@ const updateOrder = async (order: OrderType.SingleOrder, orderId?: number) => {
 const deleteOrder = async (orderId: number) => {
     let sendcloudRequest;
     try {
-        sendcloudRequest = await request(`https://panel.sendcloud.sc/api/v2/parcels/${orderId}/cancel`,
+        sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/parcels/${orderId}/cancel`,
             {
                 headers: {
                     "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
@@ -140,7 +140,7 @@ const deleteOrder = async (orderId: number) => {
 const getOrderStatuses = async () => {
     let sendcloudRequest;
     try {
-        sendcloudRequest = await request(`https://panel.sendcloud.sc/api/v2/parcels/statuses`,
+        sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/parcels/statuses`,
             {
                 headers: {
                     "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
