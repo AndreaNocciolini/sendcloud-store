@@ -30,6 +30,7 @@
     "fastify": "^4.15.0",
     "fastify-autoload": "^3.9.0",
     "fastify-plugin": "^4.5.0",
+    "js-file-download": "^0.4.12",
     "undici": "^4.12.1"
   }
 }
