@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { labelsHelper } from "../../helpers/labels/labelsHelper";
-import { BulkPDFLabelPrintingType } from '../../types/labels';
+import { BulkPDFLabelPrintingType, MultiPDFLabels } from '../../types/labels';
 
 
 
@@ -58,6 +58,18 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             return reply
                 .header('Content-Type', 'application/pdf')
                 .header('Content-Disposition', `attachment; filename=label-${orderId}.pdf`)
+                .send(result ? Buffer.from(result) : {});
+        }
+    );
+
+    fastify.post<{Body: MultiPDFLabels}>(
+        '/pdf-labels',
+        async (request: any, reply: any) => {
+            const pdfLabels = request.body;
+            const result = await labelsHelper.getMultiplePDFLabel(pdfLabels);
+            return reply
+                .header('Content-Type', 'application/pdf')
+                .header('Content-Disposition', `attachment; filename=label-${pdfLabels.ids.toString()}.pdf`)
                 .send(result ? Buffer.from(result) : {});
         }
     );
