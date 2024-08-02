@@ -1,7 +1,7 @@
 import * as OrderType from "../../types/orders";
 import { FastifyInstance, FastifyServerOptions } from 'fastify';
-import { errorHelper } from '../../helpers/error/error';
-import { orderHelper } from "../../helpers/order/order";
+import { errorsHelper } from '../../helpers/errors/errorsHelper';
+import { ordersHelper } from "../../helpers/orders/ordersHelper";
 
 
 
@@ -15,7 +15,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
 
     fastify.get('/',
         async (request: any, reply: any) => {
-            const result = await orderHelper.getOrders();
+            const result = await ordersHelper.getOrders();
             return reply.send(result);
         }
     );
@@ -26,7 +26,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             if (!orderId) {
                 throw new Error("Please, provide an order id to retrieve");
             }
-            const result = await orderHelper.getOrders(orderId);
+            const result = await ordersHelper.getOrders(orderId);
             return reply.send(result);
         }
     );
@@ -38,8 +38,10 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
                 params: {
                     type: 'object',
                     properties: {
-                        id: { type: 'integer' },
-                        documentType: { 
+                        id: {
+                            type: 'integer'
+                        },
+                        documentType: {
                             type: 'string',
                             enum: ["air-waybill", "cn23", "cn23-default", "commercial-invoice", "cp71", "label", "qr"] // double check for documentType
                         }
@@ -51,7 +53,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         async (request: any, reply: any) => {
             const orderId = Number(request.params.id);
             const documentType = request.params.documentType;
-            const result = await orderHelper.getOrderDocuments(orderId, documentType);
+            const result = await ordersHelper.getOrderDocuments(orderId, documentType);
             return reply.send(result);
         }
     );
@@ -63,7 +65,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             if (!order) {
                 throw new Error("Please, provide an order to send");
             }
-            const result = await orderHelper.createOrder(order);
+            const result = await ordersHelper.createOrder(order);
             reply.send(result);
         });
 
@@ -79,7 +81,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             if (!orderId || Number.isNaN(orderId)) {
                 throw new Error("Please, provide a valid order to update.");
             };
-            const result = await orderHelper.updateOrder(order, orderId);
+            const result = await ordersHelper.updateOrder(order, orderId);
             reply.send(result);
         });
 
@@ -90,7 +92,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             if (!orderId) {
                 throw new Error("Please, provide an order id to delete");
             }
-            const result = await orderHelper.deleteOrder(orderId);
+            const result = await ordersHelper.deleteOrder(orderId);
             reply.send(result);
         }
     );
@@ -98,7 +100,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     fastify.get(
         '/statuses', // get Parcel Statuses. Probably useless :P --> https://api.sendcloud.dev/docs/sendcloud-public-api/parcel-statuses/operations/list-parcel-statuses
         async (request: any, reply: any) => {
-            const result = await orderHelper.getOrderStatuses();
+            const result = await ordersHelper.getOrderStatuses();
             return reply.send(result);
         }
     );

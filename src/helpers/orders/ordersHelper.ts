@@ -159,7 +159,7 @@ const getOrderStatuses = async () => {
     return JSON.parse(result);
 };
 
-export const orderHelper = {
+export const ordersHelper = {
     getOrders,
     createOrder,
     getOrderDocuments,

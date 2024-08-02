@@ -1,5 +1,5 @@
 import Fastify from 'fastify';
-import routes from './src/routes/orders/routes';
+import routes from './src/routes/orders/orders';
 import autoload from "@fastify/autoload";
 import path from "path";
 import * as dotenv from 'dotenv';
