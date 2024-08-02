@@ -60,6 +60,39 @@ const createOrder = async (order: OrderType.SingleOrder) => {
     return JSON.parse(result);
 };
 
+const updateOrder = async (order: OrderType.SingleOrder, orderId?: number) => {
+    let sendcloudRequest;
+    let orderToUpdate;
+    if (orderId) {
+        orderToUpdate = {
+            ...order,
+            parcel: {
+                ...order.parcel,
+                id: orderId
+            }
+        };
+    }
+    try {
+        sendcloudRequest = await request(`https://panel.sendcloud.sc/api/v2/parcels`,
+            {
+                headers: {
+                    "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
+                    "Content-Type": "application/json",
+                    "User-Agent": "undici/4.12.1"
+
+                },
+                method: "PUT",
+                body: JSON.stringify(orderToUpdate || order)
+            }
+        )
+    } catch (e) {
+        console.log(JSON.stringify(e));
+        return;
+    }
+    const result = await sendcloudRequest.body.text();
+    return JSON.parse(result);
+};
+
 const deleteOrder = async (orderId: number) => {
     let sendcloudRequest;
     try {
@@ -85,5 +118,6 @@ const deleteOrder = async (orderId: number) => {
 export const orderHelper = {
     getOrders,
     createOrder,
+    updateOrder,
     deleteOrder
 }

@@ -1,15 +1,20 @@
 import Fastify from 'fastify';
 import routes from './src/routes/orders/routes';
+import autoload from "@fastify/autoload";
+import path from "path";
 import * as dotenv from 'dotenv';
 
 dotenv.config();
-
 
 const fastify = Fastify({
     logger: true
 })
 
-fastify.register(routes)
+// fastify.register(routes)
+
+fastify.register(autoload, {
+    dir: path.resolve(__dirname, "./src/routes")
+});
 
 const start = async () => {
     try {

@@ -13,14 +13,14 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     //     }
     // );
 
-    fastify.get('/orders',
+    fastify.get('/',
         async (request: any, reply: any) => {
             const result = await orderHelper.getOrders();
             return reply.send(result);
         }
     );
 
-    fastify.get('/orders/:id',
+    fastify.get('/:id',
         async (request: any, reply: any) => {
             const orderId = request.params.id;
             if (!orderId) {
@@ -32,7 +32,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     );
 
     fastify.post<{ Body: OrderType.SingleOrder }>(
-        '/orders/create',
+        '/create',
         async (request: any, reply: any) => {
             const order = request.body;
             if (!order) {
@@ -42,22 +42,24 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             reply.send(result);
         });
 
-    /* 
-    DO UPDATE ORDERS
-        fastify.post<{ Body: OrderType.SingleOrder }>(
-        '/orders/create',
+
+    fastify.put<{ Body: Partial<OrderType.SingleOrder> }>(
+        '/update/:id',
         async (request: any, reply: any) => {
-            const order = request.body;
-            if (!order) {
-                throw new Error("Please, provide an order to send");
-            }
-            const result = await orderHelper.createOrder(order);
+            const order = request?.body;
+            const orderId = Number(request.params?.id);
+            if(!order){
+                throw new Error(`Please, provide data to update for order with parcelId: ${orderId}`);
+            };
+            if (!orderId || Number.isNaN(orderId)) {
+                throw new Error("Please, provide a valid order to update.");
+            };
+            const result = await orderHelper.updateOrder(order, orderId);
             reply.send(result);
         });
-    */
 
     fastify.delete<{ Body: number }>(
-        '/orders/delete/:id',
+        '/delete/:id',
         async (request: any, reply: any) => {
             const orderId = request.params.id;
             if (!orderId) {
