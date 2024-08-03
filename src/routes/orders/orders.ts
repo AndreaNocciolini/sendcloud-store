@@ -69,7 +69,9 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             reply.send(result);
         });
 
-
+    /* 
+        TODO This route must not create label for an order. Set "request_label" to false everytime
+    */
     fastify.put<{ Body: Partial<OrderType.SingleOrder> }>(
         '/update/:id',
         async (request: any, reply: any) => {
