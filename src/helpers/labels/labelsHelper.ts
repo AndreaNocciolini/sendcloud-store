@@ -46,7 +46,7 @@ const getPDFLabel = async (orderId: number) => {
 }
 
 const getMultiplePDFLabel = async (pdfLabels: MultiPDFLabels) => {
-    const queryParams = `ids=${encodeURI(pdfLabels.ids.toString())}&start_position=${pdfLabels.start_from}`
+    const queryParams = `ids=${encodeURI(pdfLabels.ids.toString())}&start_position=${pdfLabels?.start_from || 0}`
 
     let sendcloudRequest;
     try {
