@@ -105,6 +105,8 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
                 .send(result ? Buffer.from(result) : {});
         }
     );
+
+    // TODO: add customs declaration API
 }
 
 export = routes;
