@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "set-node-version": "powershell -Command \"nvm use $(Get-Content .nvmrc).replace('v', '')\"",
     "build": "tsc",
     "start": "nodemon -r dotenv/config --exec ts-node server.ts"
   },
