@@ -92,9 +92,57 @@ const bulkPDFLabelPrint = async (labels: BulkPDFLabelPrintingType) => {
     return JSON.parse(result);
 }
 
+const getPDFLabelSpecificPrinter = async (orderId: MultiPDFLabels) => {
+    let sendcloudRequest;
+    try {
+        sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/labels/label_printer/${orderId}`,
+            {
+                headers: {
+                    "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
+                    "Content-Type": "application/json",
+                    "User-Agent": "undici/4.12.1"
+
+                },
+                method: "GET"
+            }
+        )
+    } catch (e) {
+        console.log(JSON.stringify(e));
+        return;
+    }
+    const result = await sendcloudRequest.body.arrayBuffer();
+    return result;
+}
+
+const getMultiplePDFLabelSpecificPrinter = async (pdfLabels: MultiPDFLabels) => {
+    const queryParams = `ids=${encodeURI(pdfLabels.ids.toString())}`
+
+    let sendcloudRequest;
+    try {
+        sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/labels/label_printer?${queryParams}`,
+            {
+                headers: {
+                    "Authorization": `Basic ${process.env.SENDCLOUD_AUTH}`,
+                    "Content-Type": "application/json",
+                    "User-Agent": "undici/4.12.1"
+
+                },
+                method: "GET"
+            }
+        )
+    } catch (e) {
+        console.log(JSON.stringify(e));
+        return;
+    }
+    const result = await sendcloudRequest.body.arrayBuffer();
+    return result;
+}
+
 export const labelsHelper = {
     getLabel,
     getPDFLabel,
     getMultiplePDFLabel,
-    bulkPDFLabelPrint
+    bulkPDFLabelPrint,
+    getPDFLabelSpecificPrinter,
+    getMultiplePDFLabelSpecificPrinter
 }

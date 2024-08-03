@@ -62,11 +62,43 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         }
     );
 
-    fastify.post<{Body: MultiPDFLabels}>(
+    fastify.post<{ Body: MultiPDFLabels }>(
         '/pdf-labels',
         async (request: any, reply: any) => {
             const pdfLabels = request.body;
             const result = await labelsHelper.getMultiplePDFLabel(pdfLabels);
+            return reply
+                .header('Content-Type', 'application/pdf')
+                .header('Content-Disposition', `attachment; filename=label-${pdfLabels.ids.toString()}.pdf`)
+                .send(result ? Buffer.from(result) : {});
+        }
+    );
+
+    /* 
+        Retrieve a shipping label for a specific parcel in PDF format for a specific printer.
+        TO CHECK
+    */
+    fastify.post<{ Body: MultiPDFLabels }>(
+        '/label_printer/pdf-label',
+        async (request: any, reply: any) => {
+            const orderId = request.body.ids;
+            const result = await labelsHelper.getPDFLabelSpecificPrinter(orderId);
+            return reply
+                .header('Content-Type', 'application/pdf')
+                .header('Content-Disposition', `attachment; filename=label-${orderId}.pdf`)
+                .send(result ? Buffer.from(result) : {});
+        }
+    );
+
+    /* 
+        Retrieve a shipping label for a specific parcel in PDF format for a specific printer.
+        TO CHECK
+    */
+    fastify.post<{ Body: MultiPDFLabels }>(
+        '/label_printer/pdf-labels',
+        async (request: any, reply: any) => {
+            const pdfLabels = request.body;
+            const result = await labelsHelper.getMultiplePDFLabelSpecificPrinter(pdfLabels);
             return reply
                 .header('Content-Type', 'application/pdf')
                 .header('Content-Disposition', `attachment; filename=label-${pdfLabels.ids.toString()}.pdf`)
