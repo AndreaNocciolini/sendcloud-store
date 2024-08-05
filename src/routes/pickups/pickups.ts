@@ -42,6 +42,14 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
             return reply.send(result);
         }
     )
+
+    fastify.post(
+        '/create',
+        async (request: any, reply: any) => {
+            const result = await pickupsHelper.getPickups();
+            return reply.send(result);
+        }
+    )
 }
 
 export = routes;
