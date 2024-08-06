@@ -1,5 +1,7 @@
 // TODO: check again the types and remove duplicate code.
 
+export type PickupBodyType = BasePickupType | FedExPickupType | CorreosExpressPickupType | DHLPickupType | PosteItalianePickupType | DPDPickupType | DPDPickupType | DHLIberiaPickupType;
+
 export type OriginDetailType = {
     package_location: "front" | "none" | "rear" | "side"; // Provides a location description where the courier/driver will pick up the package.
     building_part: "apartment" | "building" | "department" | "floor" | "room" | "suite"; // Describe package location building part.
