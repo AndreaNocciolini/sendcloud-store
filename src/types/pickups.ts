@@ -19,19 +19,19 @@ export type BasePickupType = {
     contract?: number | null; // Id of the contract you want to be used for pickup request.
 }
 
-export type FedExPickupType = {
+export type FedExPickupType = BasePickupType & {
 
 }
 
-export type CorreosExpressPickupType = {
+export type CorreosExpressPickupType = BasePickupType & {
 
 }
 
-export type DHLPickupType = {
+export type DHLPickupType = BasePickupType & {
 
 }
 
-export type PosteItalianePickupType = {
+export type PosteItalianePickupType = BasePickupType & {
 
 }
 
