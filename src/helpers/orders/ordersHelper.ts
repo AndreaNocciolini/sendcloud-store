@@ -1,3 +1,4 @@
+import { DocumentsType } from "../../types/documents";
 import * as OrderType from "../../types/orders";
 import { request } from "undici";
 
@@ -37,7 +38,7 @@ const getOrders = async (id?: number) => {
     return JSON.parse(result);
 }
 
-const getOrderDocuments = async (orderId: number, documentType: DocumentType) => {
+const getOrderDocuments = async (orderId: number, documentType: DocumentsType) => {
     let sendcloudRequest;
     try {
             sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/parcels/${orderId}/documents/${documentType}`,

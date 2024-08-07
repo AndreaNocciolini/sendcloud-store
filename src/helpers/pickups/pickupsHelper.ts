@@ -1,4 +1,3 @@
-import * as OrderType from "../../types/orders";
 import { request } from "undici";
 import { PickupBodyType } from "../../types/pickups";
 

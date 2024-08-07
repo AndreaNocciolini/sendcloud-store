@@ -2,6 +2,7 @@ import * as OrderType from "../../types/orders";
 import { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { errorsHelper } from '../../helpers/errors/errorsHelper';
 import { ordersHelper } from "../../helpers/orders/ordersHelper";
+import { DocumentsType } from "../../types/documents";
 
 
 
@@ -31,7 +32,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         }
     );
 
-    fastify.get<{ Params: { id: number, documentType: DocumentType } }>(
+    fastify.get<{ Params: { id: number, documentType: DocumentsType } }>(
         'documents/:id/:documentType',
         {
             schema: {
