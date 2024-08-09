@@ -2,6 +2,7 @@ import { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { genericHelper } from '../../helpers/generic/genericHelpers';
 import { mappersHelper } from '../../helpers/generic/mappersHelper';
 import { TransitTimesBodyType } from '../../types/generics';
+import { carriersHelper } from '../../helpers/carriers/carriersHelper';
 
 
 async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
@@ -13,6 +14,37 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     // );
 
     //TODO: check for Deutsch Post International. AWB (https://api.sendcloud.dev/docs/sendcloud-public-api/air-waybill). Seems useless to me right now, but I should implement it.
+    fastify.get(
+        '/contracts',
+        async (request: any, reply: any) => {
+            const result = await carriersHelper.getContracts();
+            return reply.send(result);
+        }
+    );
+
+    fastify.get(
+        '/contracts/:id',
+                {
+            schema: {
+                params: {
+                    properties: {
+                        id: {
+                            type: 'integer'
+                        }
+                    },
+                    required: ['id']
+                }
+            }
+        },
+        async (request: any, reply: any) => {
+            const contractId = request.params.id;
+            if (!contractId) {
+                throw new Error("Please, provide an address id to retrieve");
+            }
+            const result = await carriersHelper.getContracts(contractId);
+            return reply.send(result);
+        }
+    )
 
     fastify.post<{ Body: TransitTimesBodyType }>(
         '/transit-times',
