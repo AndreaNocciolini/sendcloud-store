@@ -12,6 +12,8 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     //     }
     // );
 
+    //TODO: check for Deutsch Post International. AWB (https://api.sendcloud.dev/docs/sendcloud-public-api/air-waybill). Seems useless to me right now, but I should implement it.
+
     fastify.post<{ Body: TransitTimesBodyType }>(
         '/transit-times',
 
