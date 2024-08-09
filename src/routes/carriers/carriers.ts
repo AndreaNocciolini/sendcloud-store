@@ -14,6 +14,8 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     // );
 
     //TODO: check for Deutsch Post International. AWB (https://api.sendcloud.dev/docs/sendcloud-public-api/air-waybill). Seems useless to me right now, but I should implement it.
+    //TODO: check for Retrieve a list of delivery options.(https://api.sendcloud.dev/docs/sendcloud-public-api/dynamic-checkout/operations/list-checkout-configuration-delivery-options).I probably have to implement it.
+
     fastify.get(
         '/contracts',
         async (request: any, reply: any) => {
