@@ -1,4 +1,4 @@
-export type CarriersTransitTimesQuery = {
+export type CarrierTransitTimesBodyType = {
     carrier_code: string[]; // Selection of carriers.
     start_date?: string; // First delivery start date. Example: 2020-12-31.
     end_date?: string; // First delivery end date. Example: 2022-12-31.

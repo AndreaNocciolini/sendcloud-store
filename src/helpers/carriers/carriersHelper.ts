@@ -1,9 +1,11 @@
 import { request } from "undici";
-import { CarriersTransitTimesQuery } from "../../types/carriers";
+import { CarrierTransitTimesBodyType } from "../../types/carriers";
 
-const getCarriersTransitTime = async (query: CarriersTransitTimesQuery) => {
+const getCarriersTransitTime = async (data: CarrierTransitTimesBodyType) => {
     const queryStringObject = Object.fromEntries(
-        Object.entries(query).map(([key, value]) => [key, String(value)])
+        Object
+        .entries(data)
+        .map(([key, value]) => [key, String(value)])
     );
     const queryParams = new URLSearchParams(queryStringObject).toString();
 
