@@ -7,6 +7,6 @@ const cleanRequestBody = (data: Record<string | number, any>): any => {
     return data;
 };
 
-export const genericHelper = {
+export const mappersHelper = {
     cleanRequestBody
 }

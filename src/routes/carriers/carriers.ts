@@ -1,7 +1,7 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify';
-import { carriersHelper } from '../../helpers/carriers/carriersHelper';
-import { genericHelper } from '../../helpers/generic/genericHelper';
-import { CarrierTransitTimesBodyType } from '../../types/carriers';
+import { genericHelper } from '../../helpers/generic/genericHelpers';
+import { mappersHelper } from '../../helpers/generic/mappersHelper';
+import { TransitTimesBodyType } from '../../types/generics';
 
 
 async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
@@ -12,13 +12,13 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     //     }
     // );
 
-    fastify.post<{ Body: CarrierTransitTimesBodyType }>(
+    fastify.post<{ Body: TransitTimesBodyType }>(
         '/transit-times',
 
         async (request: any, reply: any) => {
             const { carrier_code, start_date, end_date, from_country, to_country } = request.body;
-            const cleanData = genericHelper.cleanRequestBody({ carrier_code, start_date, end_date, from_country, to_country })
-            const result = await carriersHelper.getCarriersTransitTime(cleanData);
+            const cleanData = mappersHelper.cleanRequestBody({ carrier_code, start_date, end_date, from_country, to_country })
+            const result = await genericHelper.getTransitTime(cleanData, "carriers");
             return reply.send(result);
         }
     );
