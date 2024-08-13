@@ -21,7 +21,20 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         }
     );
 
-    fastify.get('/:id',
+    fastify.get(
+        '/:id',
+        {
+            schema: {
+                params: {
+                    properties: {
+                        id: {
+                            type: 'number'
+                        }
+                    },
+                    required: ['id']
+                }
+            }
+        },
         async (request: any, reply: any) => {
             const orderId = request.params.id;
             if (!orderId) {
@@ -75,6 +88,18 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     */
     fastify.put<{ Body: Partial<OrderType.SingleOrder> }>(
         '/update/:id',
+        {
+            schema: {
+                params: {
+                    properties: {
+                        id: {
+                            type: 'number'
+                        }
+                    },
+                    required: ['id']
+                }
+            }
+        },
         async (request: any, reply: any) => {
             const order = request?.body;
             const orderId = Number(request.params?.id);
@@ -90,6 +115,18 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
 
     fastify.delete<{ Body: number }>(
         '/delete/:id',
+        {
+            schema: {
+                params: {
+                    properties: {
+                        id: {
+                            type: 'number'
+                        }
+                    },
+                    required: ['id']
+                }
+            }
+        },
         async (request: any, reply: any) => {
             const orderId = request.params.id;
             if (!orderId) {
