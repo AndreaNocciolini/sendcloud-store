@@ -1,6 +1,7 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { errorsHelper } from '../../helpers/errors/errorsHelper';
 import { returnsHelper } from '../../helpers/returns/returnsHelper';
+import { returnsPortalHelper } from '../../helpers/returns/returnsPortalHelper';
 
 
 
@@ -45,6 +46,30 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
 
     //TODO: add Return Portals!!! https://api.sendcloud.dev/docs/sendcloud-public-api/return-portal/operations/create-a-brand-return-portal-incoming
     //The path indicates /brands, but still, I think I should add the routes here
+
+    fastify.get(
+        '/return_portal/:brand_domain',
+        {
+            schema: {
+                params: {
+                    properties: {
+                        brand_domain: {
+                            type: 'string'
+                        }
+                    },
+                    required: ['brand_domain']
+                }
+            }
+        },
+        async (request: any, reply: any) => {
+            const brandDomain = request.params.brand_domain;
+            if (!brandDomain) {
+                throw new Error("Please, provide a valid Brand Id");
+            }
+            const result = await returnsPortalHelper.getReturnsPortalSettings(brandDomain);
+            return reply.send(result);
+        }
+    );
 }
 
 export = routes;
