@@ -3,8 +3,11 @@ import { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { errorsHelper } from '../../helpers/errors/errorsHelper';
 import { ordersHelper } from "../../helpers/orders/ordersHelper";
 import { DocumentsType } from "../../types/documents";
+import { Type } from "@sinclair/typebox";
 
-
+const ParamsSchema = Type.Object({
+    id: Type.Number() // Tipo per l'id
+});
 
 async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     // fastify.get('/',
@@ -25,14 +28,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         '/:id',
         {
             schema: {
-                params: {
-                    properties: {
-                        id: {
-                            type: 'number'
-                        }
-                    },
-                    required: ['id']
-                }
+                params: ParamsSchema
             }
         },
         async (request: any, reply: any) => {
@@ -72,7 +68,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         }
     );
 
-    fastify.post<{ Body: OrderType.SingleOrder }>(
+    fastify.post<{ Body: OrderType.SingleOrderType }>(
         '/create',
         async (request: any, reply: any) => {
             const order = request.body;
@@ -86,18 +82,11 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     /* 
         TODO This route must not create label for an order. Set "request_label" to false everytime
     */
-    fastify.put<{ Body: Partial<OrderType.SingleOrder> }>(
+    fastify.put<{ Body: Partial<OrderType.SingleOrderType> }>(
         '/update/:id',
         {
             schema: {
-                params: {
-                    properties: {
-                        id: {
-                            type: 'number'
-                        }
-                    },
-                    required: ['id']
-                }
+                params: ParamsSchema
             }
         },
         async (request: any, reply: any) => {
@@ -117,14 +106,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         '/delete/:id',
         {
             schema: {
-                params: {
-                    properties: {
-                        id: {
-                            type: 'number'
-                        }
-                    },
-                    required: ['id']
-                }
+                params: ParamsSchema
             }
         },
         async (request: any, reply: any) => {

@@ -60,7 +60,7 @@ const getOrderDocuments = async (orderId: number, documentType: DocumentsType) =
     return JSON.parse(result);
 }
 
-const createOrder = async (order: OrderType.SingleOrder) => {
+const createOrder = async (order: OrderType.SingleOrderType) => {
     let sendcloudRequest;
     try {
         sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/parcels`,
@@ -83,7 +83,7 @@ const createOrder = async (order: OrderType.SingleOrder) => {
     return JSON.parse(result);
 };
 
-const updateOrder = async (order: OrderType.SingleOrder, orderId?: number) => {
+const updateOrder = async (order: OrderType.SingleOrderType, orderId?: number) => {
     let sendcloudRequest;
     let orderToUpdate;
     if (orderId) {

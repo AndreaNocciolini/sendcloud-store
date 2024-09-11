@@ -2,7 +2,7 @@ At the moment, I just put the endpoint to retrieve outgoing returns.
 
 Before continuing with the project, something must be done:
 
-- Install Sinclair TypeBox;
+- Install Sinclair TypeBox; --> DONE
 - Check if I can make more generic code for helpers;
 - Change method for SC API endpoint that need query from GET to POST (check getReturnsPortalOutgoingParcels() to see how I've done it);
 - OPTIONAL: create README.md;
