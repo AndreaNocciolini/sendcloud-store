@@ -1,7 +1,7 @@
 import { request } from "undici";
-import { ShippingPricesQuery } from "../../types/shippings";
+import { ShippingPricesQueryType } from "../../types/shippings";
 
-const getShippingPrices = async (query: ShippingPricesQuery) => {
+const getShippingPrices = async (query: ShippingPricesQueryType) => {
     const queryStringObject = Object.fromEntries(
         Object.entries(query).map(([key, value]) => [key, String(value)])
     );

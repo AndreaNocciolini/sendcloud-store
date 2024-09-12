@@ -4,8 +4,11 @@ import { shippingMethodsHelper } from '../../../helpers/shippings/shippingMethod
 import { mappersHelper } from '../../../helpers/generic/mappersHelper';
 import { genericHelper } from '../../../helpers/generic/genericHelpers';
 import { TransitTimesBodyType } from '../../../types/generics';
+import { Type } from '@sinclair/typebox';
 
-
+const ParamsSchema = Type.Object({
+    id: Type.Number()
+});
 
 async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     // fastify.get('/',
@@ -26,16 +29,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     fastify.get(
         '/:id',
                 {
-            schema: {
-                params: {
-                    properties: {
-                        id: {
-                            type: 'integer'
-                        }
-                    },
-                    required: ['id']
-                }
-            }
+            schema: ParamsSchema
         },
         async (request: any, reply: any) => {
             const shippingMethodId = request.params.id;

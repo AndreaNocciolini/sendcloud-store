@@ -1,9 +1,20 @@
-export type TransitTimesBodyType = {
-    carrier_code: string[] // Selection of carriers.
-    start_date?: string; // First delivery start date. Example: 2020-12-31.
-    end_date?: string; // First delivery end date. Example: 2022-12-31.
-    from_country?: string; // Origin country. Example: DE.
-    to_country?: string; // Destination country. Example: NL.
-} & (
-    | { shipping_method_code: string[] } // Selections of shipping methods
-);
+import { Type, Static } from '@sinclair/typebox';
+
+const TransitTimesBody = Type.Intersect([
+    Type.Object({
+        carrier_code: Type.Array(Type.String()), // Array of carrier codes
+        start_date: Type.Optional(Type.String({ format: "date" })), // Optional start date (ISO 8601 format)
+        end_date: Type.Optional(Type.String({ format: "date" })), // Optional end date (ISO 8601 format)
+        from_country: Type.Optional(Type.String({ minLength: 2, maxLength: 2 })), // Optional origin country (ISO 3166-1 alpha-2)
+        to_country: Type.Optional(Type.String({ minLength: 2, maxLength: 2 })) // Optional destination country (ISO 3166-1 alpha-2)
+    }),
+    Type.Object({
+        shipping_method_code: Type.Array(Type.String()) // Array of shipping methods
+    })
+]);
+
+type TransitTimesBodyType = Static<typeof TransitTimesBody>;
+
+export {
+    TransitTimesBodyType
+}

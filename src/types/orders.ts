@@ -10,7 +10,7 @@ const ParcelItemObjectProperties = Type.Record(
     Type.String()   // Tipo dei valori (stringa)
 );
 
-const CustomsShipment = Type.Number({
+const CustomsShipment = Type.Number({ // maybe use Type.Literal?
     exclusiveMaximum: 4,
     exclusiveMinimum: 0
 });  // Customs shipment type. Allowed values: 0(Gift), 1(Documents),2(Commercial Goods),3(Commercial Sample),4(Returned Goods).

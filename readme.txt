@@ -64,3 +64,9 @@ REPORTS:
 USERS:
 - Retrieve the current user data;
 ##################################################
+
+
+DONE:
+- Typebox for Orders;
+- Typebox for Pickups;
+- Typebox for Labels;
