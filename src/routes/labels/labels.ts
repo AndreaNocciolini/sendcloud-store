@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { labelsHelper } from "../../helpers/labels/labelsHelper";
-import { BulkPDFLabelPrintingType, MultiPDFLabels } from '../../types/labels';
+import { BulkPDFLabelPrintingType, MultiPDFLabelsType } from '../../types/labels';
 
 
 
@@ -62,7 +62,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         }
     );
 
-    fastify.post<{ Body: MultiPDFLabels }>(
+    fastify.post<{ Body: MultiPDFLabelsType }>(
         '/pdf-labels',
         async (request: any, reply: any) => {
             const pdfLabels = request.body;
@@ -78,7 +78,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         Retrieve a shipping label for a specific parcel in PDF format for a specific printer.
         TO CHECK
     */
-    fastify.post<{ Body: MultiPDFLabels }>(
+    fastify.post<{ Body: MultiPDFLabelsType }>(
         '/label_printer/pdf-label',
         async (request: any, reply: any) => {
             const orderId = request.body.ids;
@@ -94,7 +94,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
         Retrieve a shipping label for a specific parcel in PDF format for a specific printer.
         TO CHECK
     */
-    fastify.post<{ Body: MultiPDFLabels }>(
+    fastify.post<{ Body: MultiPDFLabelsType }>(
         '/label_printer/pdf-labels',
         async (request: any, reply: any) => {
             const pdfLabels = request.body;

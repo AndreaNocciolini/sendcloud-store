@@ -1,5 +1,5 @@
 import { request } from "undici";
-import { BulkPDFLabelPrintingType, MultiPDFLabels } from "../../types/labels";
+import { BulkPDFLabelPrintingType, MultiPDFLabelsType } from "../../types/labels";
 
 const getLabel = async (orderId: number) => {
     let sendcloudRequest;
@@ -45,7 +45,7 @@ const getPDFLabel = async (orderId: number) => {
     return result;
 }
 
-const getMultiplePDFLabel = async (pdfLabels: MultiPDFLabels) => {
+const getMultiplePDFLabel = async (pdfLabels: MultiPDFLabelsType) => {
     const queryParams = `ids=${encodeURI(pdfLabels.ids.toString())}&start_position=${pdfLabels?.start_from || 0}`
 
     let sendcloudRequest;
@@ -92,7 +92,7 @@ const bulkPDFLabelPrint = async (labels: BulkPDFLabelPrintingType) => {
     return JSON.parse(result);
 }
 
-const getPDFLabelSpecificPrinter = async (orderId: MultiPDFLabels) => {
+const getPDFLabelSpecificPrinter = async (orderId: MultiPDFLabelsType) => {
     let sendcloudRequest;
     try {
         sendcloudRequest = await request(`${process.env.SENDCLOUD_API_V2_BASE_URL}/labels/label_printer/${orderId}`,
@@ -114,7 +114,7 @@ const getPDFLabelSpecificPrinter = async (orderId: MultiPDFLabels) => {
     return result;
 }
 
-const getMultiplePDFLabelSpecificPrinter = async (pdfLabels: MultiPDFLabels) => {
+const getMultiplePDFLabelSpecificPrinter = async (pdfLabels: MultiPDFLabelsType) => {
     const queryParams = `ids=${encodeURI(pdfLabels.ids.toString())}`
 
     let sendcloudRequest;
