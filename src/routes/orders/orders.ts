@@ -6,7 +6,7 @@ import { DocumentsType } from "../../types/documents";
 import { Type } from "@sinclair/typebox";
 
 const ParamsSchema = Type.Object({
-    id: Type.Number() // Tipo per l'id
+    id: Type.Number()
 });
 
 async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {

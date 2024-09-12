@@ -1,23 +1,17 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { labelsHelper } from "../../helpers/labels/labelsHelper";
 import { BulkPDFLabelPrintingType, MultiPDFLabelsType } from '../../types/labels';
+import { Type } from '@sinclair/typebox';
 
-
+const ParamsSchema = Type.Object({
+    id: Type.Number()
+});
 
 async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     fastify.get(
         '/:id',
         {
-            schema: {
-                params: {
-                    properties: {
-                        id: {
-                            type: 'integer'
-                        }
-                    },
-                    required: ['id']
-                }
-            }
+            schema: ParamsSchema
         },
         async (request: any, reply: any) => {
             const orderId = request.params.id;
@@ -41,16 +35,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     fastify.get(
         '/pdf-label/:id',
         {
-            schema: {
-                params: {
-                    properties: {
-                        id: {
-                            type: 'integer'
-                        }
-                    },
-                    required: ['id']
-                }
-            }
+            schema: ParamsSchema
         },
         async (request: any, reply: any) => {
             const orderId = request.params.id;

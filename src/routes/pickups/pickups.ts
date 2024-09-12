@@ -1,8 +1,11 @@
 import { FastifyInstance, FastifyServerOptions } from 'fastify';
 import { errorsHelper } from '../../helpers/errors/errorsHelper';
 import { pickupsHelper } from "../../helpers/pickups/pickupsHelper";
+import { Type } from '@sinclair/typebox';
 
-
+const ParamsSchema = Type.Object({
+    id: Type.Number()
+});
 
 async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     // fastify.get('/',
@@ -22,16 +25,7 @@ async function routes(fastify: FastifyInstance, options: FastifyServerOptions) {
     fastify.get(
         '/:id',
                 {
-            schema: {
-                params: {
-                    properties: {
-                        id: {
-                            type: 'integer'
-                        }
-                    },
-                    required: ['id']
-                }
-            }
+            schema: ParamsSchema
         },
         async (request: any, reply: any) => {
             const pickupId = request.params.id;

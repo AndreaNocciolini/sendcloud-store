@@ -1,113 +1,178 @@
-// TODO: check again the types and remove duplicate code.
+import { Type, Static } from '@sinclair/typebox';
 
-export type PickupBodyType = BasePickupType | FedExPickupType | CorreosExpressPickupType | DHLPickupType | PosteItalianePickupType | DPDPickupType | DPDPickupType | DHLIberiaPickupType;
+// Define BasePickupType with Typebox
+export const BasePickup = Type.Object({
+    name: Type.Optional(Type.String({ minLength: 1 })), // Optional, minimum 1 character
+    company_name: Type.Optional(Type.Union([Type.String({ minLength: 1 }), Type.Null()])), // Optional, string or null, minimum 1 character
+    city: Type.String({ minLength: 1 }), // Required, minimum 1 character
+    country: Type.Union([
+        Type.Literal("NL"),
+        Type.Literal("DE"),
+        Type.Literal("ES"),
+        Type.Literal("FR"),
+        Type.Literal("IT"),
+        Type.Literal("AT")
+    ]), // Required, country code (ISO 3166-1 alpha-2)
+    postal_code: Type.String({ minLength: 1 }), // Required, minimum 1 character
+    address: Type.String({ minLength: 1 }), // Required, minimum 1 character
+    address_2: Type.Optional(Type.Union([Type.String(), Type.Null()])), // Optional, can be null
+    country_state: Type.Optional(Type.Union([Type.String({ minLength: 1 }), Type.Null()])), // Optional, can be null
+    telephone: Type.Optional(Type.Union([Type.String(), Type.Null()])), // Optional telephone, can be null
+    email: Type.Optional(Type.Union([Type.String({ minLength: 1 }), Type.Null()])), // Optional email, can be null
+    pickup_from: Type.String({ minLength: 1 }), // Required, ISO 8601 DateTime, minimum 1 character
+    pickup_until: Type.Optional(Type.Union([Type.String({ minLength: 1 }), Type.Null()])), // Optional, can be null
+    quantity: Type.Integer({ minimum: 1, maximum: 9007199254740991 }), // Required, between 1 and max safe integer
+    total_weight: Type.Optional(Type.Union([Type.String(), Type.Null()])), // Optional total weight in kg, can be null
+    reference: Type.Optional(Type.Union([Type.String({ minLength: 1 }), Type.Null()])), // Optional reference number, can be null
+    special_instructions: Type.Optional(Type.Union([Type.String({ minLength: 1 }), Type.Null()])), // Optional special instructions
+    carrier: Type.Optional(Type.String()), // Optional carrier code
+    contract: Type.Optional(Type.Union([Type.Integer(), Type.Null()])) // Optional contract ID
+});
 
-export type OriginDetailType = {
-    package_location: "front" | "none" | "rear" | "side"; // Provides a location description where the courier/driver will pick up the package.
-    building_part: "apartment" | "building" | "department" | "floor" | "room" | "suite"; // Describe package location building part.
-    company_close_time: string; // string<time>. Identifies the latest time at which the driver can gain access to pick up the package. Ex: 17:00:00.
-    building_part_description?: string; // Additional description of package pickup location.
-}
+// FedExPickupType extending BasePickupType
+export const FedExPickup = Type.Intersect([
+    BasePickup,
+    Type.Object({
+        name: Type.String({ minLength: 1 }), // Required name for FedEx, minimum 1 character
+        company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Required company name, can be null
+        country: Type.Union([
+            Type.Literal("AT"),
+            Type.Literal("BE"),
+            Type.Literal("DE"),
+            Type.Literal("ES"),
+            Type.Literal("FR"),
+            Type.Literal("GB"),
+            Type.Literal("IT"),
+            Type.Literal("NL")
+        ]), // Required country for FedEx
+        telephone: Type.String(), // Required telephone for FedEx
+        total_weight: Type.String(), // Required total weight for FedEx
+        carrier: Type.String(), // Required carrier code for FedEx
+        origin_detail: Type.Object({
+            // Example: Define origin detail properties here
+        })
+    })
+]);
 
-export type UPSPickupItemsType = {
-    quantity: number; // Number of pieces to be picked up. Allowed values >= 1 and <= 9007199254740991.
-    destination_country: string; // The destination country (ISO 3166-1 alpha-2 country code). Allowed values = 2 carachters (only 2). Example: NL.
-    container_code: "01" | "03"; // Container type combined: * 01 - Package * 03 - Pallet.
-    shipping_method: "007" | "065" | "011"; // The Service Codes include: * '007' - UPS Express * '065' - UPS Express Saver * '011' - UPS Standard.
-}
+// OriginDetailType for pickup location details
+export const OriginDetail = Type.Object({
+    package_location: Type.Union([
+        Type.Literal("front"),
+        Type.Literal("none"),
+        Type.Literal("rear"),
+        Type.Literal("side")
+    ]), // Pickup location
+    building_part: Type.Union([
+        Type.Literal("apartment"),
+        Type.Literal("building"),
+        Type.Literal("department"),
+        Type.Literal("floor"),
+        Type.Literal("room"),
+        Type.Literal("suite")
+    ]), // Building part for pickup
+    company_close_time: Type.String(), // Latest time the driver can pick up
+    building_part_description: Type.Optional(Type.String()) // Optional description of building part
+});
 
-export type BasePickupType = {
-    name?: string; // Contact Person Name. Allowed values >= 1 characters.
-    company_name?: string | null; // Allowed values >= 1 characters.
-    city: string; //  Allowed values >= 1 characters.
-    country: "NL" | "DE" | "ES" | "FR" | "IT" | "AT"; //  ISO 3166-1 alpha-2 country code. Allowed values = 2 characters (only 2).
-    postal_code: string; //  Allowed values >= 1 characters.
-    address: string; // Address line 1 of the pickup, this should include the house number. Allowed values >= 1 characters.
-    address_2?: string | null; // Address line 2 of the pickup. Allowed values >= 0 characters.
-    country_state?: string | null; // Allowed values >= 1 characters.
-    telephone?: string | null; // Contact person telephone number.
-    email?: string | null; // Contact person email. Allowed values >= 1 characters.
-    pickup_from: string; // ISO 8601 DateTime that indicates from what time the pickup can take place. Preferably specified in UTC. When no timezone information is specified, we will use the timezone of the user their invoice address country. Allowed values >= 1 characters.
-    pickup_until?: string | null; // ISO 8601 DateTime that indicates until what time the pickup can take place. Preferably specified in UTC. When no timezone information is specified, we will use the timezone of the user their invoice address country.  Allowed values >= 1 characters.
-    quantity: number // Number of parcels that should be picked up. Allowed values >= 1 and <= 9007199254740991.
-    total_weight?: string | null; // Total weight in kilograms.
-    reference?: string | null; // A reference number for your own administration. Allowed values >= 1 characters.
-    special_instructions?: string | null; // Special instructions that the driver should take into account.. Allowed values >= 1 characters.
-    carrier?: string; // The user selected carrier code for the pickup (ex: dhl_express).
-    contract?: number | null; // Id of the contract you want to be used for pickup request.
-}
+// UPSPickupItemsType for UPS-specific item details
+export const UPSPickupItems = Type.Object({
+    quantity: Type.Integer({ minimum: 1, maximum: 9007199254740991 }), // Number of items, >= 1
+    destination_country: Type.String({ minLength: 2, maxLength: 2 }), // ISO 3166-1 alpha-2 country code
+    container_code: Type.Union([Type.Literal("01"), Type.Literal("03")]), // Container type
+    shipping_method: Type.Union([Type.Literal("007"), Type.Literal("065"), Type.Literal("011")]) // Shipping method
+});
 
-export type FedExPickupType = BasePickupType & {
-    name: string; // Contact Person Name. Allowed values >= 1 characters. Required for FedEx Pickup.
-    company_name: string | null; // Allowed values >= 1 characters. Required for FedEx Pickup.
-    country: "AT" | "BE" | "DE" | "ES" | "FR" | "GB" | "IT" | "NL" //  ISO 3166-1 alpha-2 country code. Allowed values = 2 characters (only 2). Different values allowed for FedEx.
-    telephone: string; // Contact person telephone number. Required for FedEx pickup.
-    total_weight: string; // Total weight in kilograms. Required for FedEx pickup.
-    carrier: string; // The user selected carrier code for the pickup (ex: fedex). Required for FedEx pickup.
-    origin_detail: OriginDetailType;
-}
+// CorreosExpressPickupType extending BasePickupType
+export const CorreosExpressPickup = Type.Intersect([
+    BasePickup,
+    Type.Object({
+        name: Type.String({ minLength: 1 }), // Required name
+        company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Company name, can be null
+        country: Type.Union([Type.Literal("AT"), Type.Literal("BE"), Type.Literal("DE"), Type.Literal("ES"), Type.Literal("FR"), Type.Literal("GB"), Type.Literal("IT"), Type.Literal("NL")]), // Required country
+        pickup_until: Type.String(), // Required pickup end time
+        telephone: Type.String(), // Required telephone
+        total_weight: Type.String(), // Required total weight
+        carrier: Type.String() // Required carrier
+    })
+]);
 
-export type CorreosExpressPickupType = BasePickupType & {
-    name: string; // Contact Person Name. Allowed values >= 1 characters. Required for Correos Express Pickup.
-    company_name: string | null; // Allowed values >= 1 characters. Required for Correos Express Pickup.
-    country: "AT" | "BE" | "DE" | "ES" | "FR" | "GB" | "IT" | "NL" //  ISO 3166-1 alpha-2 country code. Allowed values = 2 characters (only 2). Different values allowed for Correos Express.
-    pickup_until: string; // ISO 8601 DateTime that indicates until what time the pickup can take place. Preferably specified in UTC. Allowed >= 1 carachters. Required for Correos Express.
-    telephone: string; // Contact person telephone number. Required for Correos Express pickup.
-    total_weight: string; // Total weight in kilograms. Required for Correos Express pickup.
-    carrier: string; // The user selected carrier code for the pickup (ex: correos_express). Required for Correos Express pickup.
-}
+// DHLPickupType extending BasePickupType
+export const DHLPickup = Type.Intersect([
+    BasePickup,
+    Type.Object({
+        name: Type.String({ minLength: 1 }), // Required name
+        company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Required company name, can be null
+        country: Type.Union([Type.Literal("BE"), Type.Literal("NL")]), // Country for DHL
+        telephone: Type.String(), // Required telephone
+        pallet_quantity: Type.Integer({ minimum: 0, maximum: 5 }), // Number of pallets
+        total_weight: Type.String(), // Required total weight
+        carrier: Type.String() // Required carrier
+    })
+]);
 
-export type DHLPickupType = BasePickupType & {
-    name: string; // Contact Person Name. Allowed values >= 1 characters. Required for DHL Pickup.
-    company_name: string | null; // Allowed values >= 1 characters. Required for DHL Pickup.
-    country: "BE" | "NL" //  ISO 3166-1 alpha-2 country code. Allowed values = 2 characters (only 2). Different values allowed for DHL.
-    telephone: string; // Contact person telephone number. Required for DHL pickup.
-    pallet_quantity: number; // Number of pallets that should be picked up.The number of parcels or the number of pallets must be specified. Allowed values >= 0 && <= 5.
-    total_weight: string; // Total weight in kilograms. Required for DHL pickup.
-    carrier: string; // The user selected carrier code for the pickup (ex: dhl). Required for DHL pickup.
-}
+// PosteItalianePickupType extending BasePickupType
+export const PosteItalianePickup = Type.Intersect([
+    BasePickup,
+    Type.Object({
+        name: Type.String({ minLength: 1 }), // Required name
+        company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Company name, can be null
+        country: Type.Literal("IT"), // Required country
+        country_state: Type.String({ minLength: 1, maxLength: 5 }), // State code
+        telephone: Type.String(), // Required telephone
+        total_weight: Type.String(), // Required total weight
+        carrier: Type.String() // Required carrier
+    })
+]);
 
-export type PosteItalianePickupType = BasePickupType & {
-    name: string; // Contact Person Name. Allowed values >= 1 characters. Required for Poste Italiane Pickup.
-    company_name: string | null; // Allowed values >= 1 characters. Required for Poste Italiane Pickup.
-    country: "IT" //  ISO 3166-1 alpha-2 country code. Allowed values = 2 characters (only 2). Different values allowed for Poste Italiane.
-    country_state: string; // ISO 3166-2 country state code. Allowed values >= 1 && <= 5 characters. Different values allowed for Poste Italiane.
-    telephone: string; // Contact person telephone number. Required for Poste Italiane pickup.
-    total_weight: string; // Total weight in kilograms. Required for Poste Italiane pickup.
-    carrier: string; // The user selected carrier code for the pickup (ex: poste_it_delivery). Required for Poste Italiane pickup.
-}
+// UPSPickupType with item details
+export const UPSPickup = Type.Object({
+    name: Type.String({ minLength: 1 }), // Required name
+    company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Company name, can be null
+    country: Type.Union([Type.Literal("AT"), Type.Literal("BE"), Type.Literal("DE"), Type.Literal("ES"), Type.Literal("FR"), Type.Literal("GB"), Type.Literal("IT"), Type.Literal("NL")]), // Country
+    pickup_until: Type.String(), // Required pickup end time
+    telephone: Type.String(), // Required telephone
+    total_weight: Type.String(), // Required total weight
+    carrier: Type.String(), // Required carrier
+    items: Type.Array(UPSPickupItems), // Item details array
+    is_alternate_address: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])), // Optional flag for alternate address
+    is_residential: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])), // Optional flag for residential address
+    is_overweight: Type.Optional(Type.Union([Type.Boolean(), Type.Null()])), // Optional flag for overweight packages
+    room: Type.Optional(Type.Union([Type.String(), Type.Null()])), // Optional room number
+    floor: Type.Optional(Type.Union([Type.String(), Type.Integer(), Type.Null()])) // Optional floor number
+});
 
-export type UPSPickupType = {
-    name: string; // Contact Person Name. Allowed values >= 1 characters. Required for UPS Pickup.
-    company_name: string | null; // Allowed values >= 1 characters. Required for UPS Pickup.
-    country: "AT" | "BE" | "DE" | "ES" | "FR" | "GB" | "IT" | "NL" //  ISO 3166-1 alpha-2 country code. Allowed values = 2 characters (only 2). Different values allowed for UPS Pickup.
-    pickup_until: string; // ISO 8601 DateTime that indicates until what time the pickup can take place. Preferably specified in UTC. Allowed >= 1 carachters. Required for UPS Pickup.
-    telephone: string; // Contact person telephone number. Required for UPS Pickup.
-    total_weight: string; // Total weight in kilograms. Required for UPS Pickup.
-    carrier: string; // The user selected carrier code for the pickup (ex: upd). Required for UPS Pickup.
-    items: UPSPickupItemsType[]; // The container providing the information about how many items should be picked up.
-    is_alternate_address?: boolean | null; // Indicates if pickup address is a different address than that specified in a customer's profile.
-    is_residential?: boolean | null; // Indicates if the pickup address is commercial or residential.
-    is_overweight?: boolean |  null; // Indicates if at least any package is over 70 lbs or 32 kgs.
-    room?: string | null; // Room number. Example: 1.
-    floor?: string | number; // Floor number. Example: 2.
-}
+// DPDPickupType
+export const DPDPickup = Type.Object({
+    name: Type.String({ minLength: 1 }), // Required name
+    company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Company name, can be null
+    country: Type.Literal("DE"), // Required country
+    telephone: Type.String(), // Required telephone
+    total_weight: Type.String(), // Required total weight
+    carrier: Type.String() // Required carrier
+});
 
-export type DPDPickupType = {
-    name: string; // Contact Person Name. Allowed values >= 1 characters. Required for DPD Pickup.
-    company_name: string | null; // Allowed values >= 1 characters. Required for DPD Pickup.
-    country: "DE" //  ISO 3166-1 alpha-2 country code. Allowed values = 2 characters (only 2). Different values allowed for DPD Pickup.
-    telephone: string; // Contact person telephone number. Required for DPD Pickup.
-    total_weight: string; // Total weight in kilograms. Required for DPD Pickup.
-    carrier: string; // The user selected carrier code for the pickup (ex: upd). Required for DPD Pickup.
-}
+// DHLIberiaPickupType
+export const DHLIberiaPickup = Type.Object({
+    name: Type.String({ minLength: 1 }), // Required name
+    company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Company name, can be null
+    country: Type.Union([Type.Literal("ES"), Type.Literal("PT")]), // Required country
+    pickup_until: Type.String(), // Required pickup end time
+    telephone: Type.String(), // Required telephone
+    total_weight: Type.String(), // Required total weight
+    carrier: Type.String() // Required carrier
+});
 
-export type DHLIberiaPickupType = {
-    name: string; // Contact Person Name. Allowed values >= 1 characters. Required for DHL Iberia Pickup.
-    company_name: string | null; // Allowed values >= 1 characters. Required for DHL Iberia Pickup.
-    country: "ES" | "PT" //  ISO 3166-1 alpha-2 country code. Allowed values = 2 characters (only 2). Different values allowed for DHL Iberia Pickup.
-    pickup_until: string; // ISO 8601 DateTime that indicates until what time the pickup can take place. Preferably specified in UTC. Allowed >= 1 carachters. Required for DHL Iberia Pickup.
-    telephone: string; // Contact person telephone number. Required for DHL Iberia Pickup.
-    total_weight: string; // Total weight in kilograms. Required for DHL Iberia Pickup.
-    carrier: string; // The user selected carrier code for the pickup (ex: upd). Required for DHL Iberia Pickup.
+type BasePickupType = Static<typeof BasePickup> ;
+type FedExPickupType = Static<typeof FedExPickup> ;
+type CorreosExpressPickupType = Static<typeof CorreosExpressPickup> ;
+type DHLPickupType = Static<typeof DHLPickup> ;
+type PosteItalianePickupType = Static<typeof PosteItalianePickup> ;
+type DPDPickupType = Static<typeof DPDPickup> ;
+type DHLIberiaPickupType = Static<typeof DHLIberiaPickup> ;
+
+// PickupBodyType covering all pickup types
+type PickupBodyType = BasePickupType | FedExPickupType | CorreosExpressPickupType | DHLPickupType | PosteItalianePickupType | DPDPickupType | DHLIberiaPickupType;
+
+export {
+    PickupBodyType
 }
