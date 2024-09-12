@@ -1,7 +1,7 @@
 import { Type, Static } from '@sinclair/typebox';
 
 // Define BasePickupType with Typebox
-export const BasePickup = Type.Object({
+const BasePickup = Type.Object({
     name: Type.Optional(Type.String({ minLength: 1 })), // Optional, minimum 1 character
     company_name: Type.Optional(Type.Union([Type.String({ minLength: 1 }), Type.Null()])), // Optional, string or null, minimum 1 character
     city: Type.String({ minLength: 1 }), // Required, minimum 1 character
@@ -29,33 +29,8 @@ export const BasePickup = Type.Object({
     contract: Type.Optional(Type.Union([Type.Integer(), Type.Null()])) // Optional contract ID
 });
 
-// FedExPickupType extending BasePickupType
-export const FedExPickup = Type.Intersect([
-    BasePickup,
-    Type.Object({
-        name: Type.String({ minLength: 1 }), // Required name for FedEx, minimum 1 character
-        company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Required company name, can be null
-        country: Type.Union([
-            Type.Literal("AT"),
-            Type.Literal("BE"),
-            Type.Literal("DE"),
-            Type.Literal("ES"),
-            Type.Literal("FR"),
-            Type.Literal("GB"),
-            Type.Literal("IT"),
-            Type.Literal("NL")
-        ]), // Required country for FedEx
-        telephone: Type.String(), // Required telephone for FedEx
-        total_weight: Type.String(), // Required total weight for FedEx
-        carrier: Type.String(), // Required carrier code for FedEx
-        origin_detail: Type.Object({
-            // Example: Define origin detail properties here
-        })
-    })
-]);
-
 // OriginDetailType for pickup location details
-export const OriginDetail = Type.Object({
+const OriginDetail = Type.Object({
     package_location: Type.Union([
         Type.Literal("front"),
         Type.Literal("none"),
@@ -74,8 +49,31 @@ export const OriginDetail = Type.Object({
     building_part_description: Type.Optional(Type.String()) // Optional description of building part
 });
 
+// FedExPickupType extending BasePickupType
+const FedExPickup = Type.Intersect([
+    BasePickup,
+    Type.Object({
+        name: Type.String({ minLength: 1 }), // Required name for FedEx, minimum 1 character
+        company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Required company name, can be null
+        country: Type.Union([
+            Type.Literal("AT"),
+            Type.Literal("BE"),
+            Type.Literal("DE"),
+            Type.Literal("ES"),
+            Type.Literal("FR"),
+            Type.Literal("GB"),
+            Type.Literal("IT"),
+            Type.Literal("NL")
+        ]), // Required country for FedEx
+        telephone: Type.String(), // Required telephone for FedEx
+        total_weight: Type.String(), // Required total weight for FedEx
+        carrier: Type.String(), // Required carrier code for FedEx
+        origin_detail: Type.Object(OriginDetail)
+    })
+]);
+
 // UPSPickupItemsType for UPS-specific item details
-export const UPSPickupItems = Type.Object({
+const UPSPickupItems = Type.Object({
     quantity: Type.Integer({ minimum: 1, maximum: 9007199254740991 }), // Number of items, >= 1
     destination_country: Type.String({ minLength: 2, maxLength: 2 }), // ISO 3166-1 alpha-2 country code
     container_code: Type.Union([Type.Literal("01"), Type.Literal("03")]), // Container type
@@ -83,7 +81,7 @@ export const UPSPickupItems = Type.Object({
 });
 
 // CorreosExpressPickupType extending BasePickupType
-export const CorreosExpressPickup = Type.Intersect([
+const CorreosExpressPickup = Type.Intersect([
     BasePickup,
     Type.Object({
         name: Type.String({ minLength: 1 }), // Required name
@@ -97,7 +95,7 @@ export const CorreosExpressPickup = Type.Intersect([
 ]);
 
 // DHLPickupType extending BasePickupType
-export const DHLPickup = Type.Intersect([
+const DHLPickup = Type.Intersect([
     BasePickup,
     Type.Object({
         name: Type.String({ minLength: 1 }), // Required name
@@ -111,7 +109,7 @@ export const DHLPickup = Type.Intersect([
 ]);
 
 // PosteItalianePickupType extending BasePickupType
-export const PosteItalianePickup = Type.Intersect([
+const PosteItalianePickup = Type.Intersect([
     BasePickup,
     Type.Object({
         name: Type.String({ minLength: 1 }), // Required name
@@ -125,7 +123,7 @@ export const PosteItalianePickup = Type.Intersect([
 ]);
 
 // UPSPickupType with item details
-export const UPSPickup = Type.Object({
+const UPSPickup = Type.Object({
     name: Type.String({ minLength: 1 }), // Required name
     company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Company name, can be null
     country: Type.Union([Type.Literal("AT"), Type.Literal("BE"), Type.Literal("DE"), Type.Literal("ES"), Type.Literal("FR"), Type.Literal("GB"), Type.Literal("IT"), Type.Literal("NL")]), // Country
@@ -142,7 +140,7 @@ export const UPSPickup = Type.Object({
 });
 
 // DPDPickupType
-export const DPDPickup = Type.Object({
+const DPDPickup = Type.Object({
     name: Type.String({ minLength: 1 }), // Required name
     company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Company name, can be null
     country: Type.Literal("DE"), // Required country
@@ -152,7 +150,7 @@ export const DPDPickup = Type.Object({
 });
 
 // DHLIberiaPickupType
-export const DHLIberiaPickup = Type.Object({
+const DHLIberiaPickup = Type.Object({
     name: Type.String({ minLength: 1 }), // Required name
     company_name: Type.Union([Type.String({ minLength: 1 }), Type.Null()]), // Company name, can be null
     country: Type.Union([Type.Literal("ES"), Type.Literal("PT")]), // Required country
