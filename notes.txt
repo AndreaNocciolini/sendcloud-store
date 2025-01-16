@@ -1,3 +1,8 @@
+
+///
+....This page is not to be considered....just personal notes
+///
+
 At the moment, I just put the endpoint to retrieve outgoing returns.
 
 Before continuing with the project, something must be done:
